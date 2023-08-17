@@ -1,0 +1,45 @@
+---
+- name: Configure apache2 on Ubuntu and httod on Redhat servers
+  hosts: all
+  tasks:
+    - name: Install apache2
+      apt:
+        name: apache2
+        state: present
+        update_cache: yes
+      when: ansible_distribution == "Ubuntu"
+    - name: Install httpd
+      yum:
+        name: httpd
+        state: present
+        update_cache: yes
+      when: ansible_distribution == "RedHat"
+    - name: Edit the index.html file
+      copy:
+        content: "IntelliQIT"
+        dest: /var/www/html/index.html
+    - name: Restart apache2
+      service:
+        name: apache2
+        state: restarted
+      when: ansible_distribution == "Ubuntu"
+    - name: Restart httpd
+      service:
+        name: httpd
+        state: restarted
+      when: ansible_distribution == "RedHat"
+    - name: Check response of apache/httpd on all servers
+      uri:
+        url: "{{item}}"
+        status_code: 200
+      with_items:
+        - http://172.31.10.98
+        - http://172.31.3.137
+        - http://172.31.13.128
+
+
+
+
+
+
+
