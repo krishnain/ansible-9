@@ -1,0 +1,13 @@
+---
+- name: Create a ubuntu container open interactive terminal and mount a volume
+  hosts: all
+  tasks:
+    - name: Create ubuntu container
+      docker_container:
+        name: myubuntu
+        image: ubuntu
+        interactive: true
+        tty: true
+        volumes:
+          - /data
+
